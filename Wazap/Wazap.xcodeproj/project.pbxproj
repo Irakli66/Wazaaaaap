@@ -12,6 +12,7 @@
 		CB0BEFBA2D16F81E00BB7C30 /* FirebaseMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = CB0BEFB92D16F81E00BB7C30 /* FirebaseMessaging */; };
 		CB0BEFBD2D16FB9F00BB7C30 /* NetworkPackage in Frameworks */ = {isa = PBXBuildFile; productRef = CB0BEFBC2D16FB9F00BB7C30 /* NetworkPackage */; };
 		CB0BEFD02D1704C100BB7C30 /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = CB0BEFCF2D1704C100BB7C30 /* Kingfisher */; };
+		CB3BEC412D17077C0000C304 /* SimpleKeychain in Frameworks */ = {isa = PBXBuildFile; productRef = CB3BEC402D17077C0000C304 /* SimpleKeychain */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -31,6 +32,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CB3BEC412D17077C0000C304 /* SimpleKeychain in Frameworks */,
 				CB0BEFBD2D16FB9F00BB7C30 /* NetworkPackage in Frameworks */,
 				CB0BEFBA2D16F81E00BB7C30 /* FirebaseMessaging in Frameworks */,
 				CB0BEFB62D16F81E00BB7C30 /* FirebaseAnalytics in Frameworks */,
@@ -83,6 +85,7 @@
 				CB0BEFB92D16F81E00BB7C30 /* FirebaseMessaging */,
 				CB0BEFBC2D16FB9F00BB7C30 /* NetworkPackage */,
 				CB0BEFCF2D1704C100BB7C30 /* Kingfisher */,
+				CB3BEC402D17077C0000C304 /* SimpleKeychain */,
 			);
 			productName = Wazap;
 			productReference = CB0BEFA12D16F28C00BB7C30 /* Wazap.app */;
@@ -116,6 +119,7 @@
 				CB0BEFB42D16F81E00BB7C30 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 				CB0BEFBB2D16FB9F00BB7C30 /* XCRemoteSwiftPackageReference "NetworkPackage" */,
 				CB0BEFCE2D1704C100BB7C30 /* XCRemoteSwiftPackageReference "Kingfisher" */,
+				CB3BEC3F2D17077C0000C304 /* XCRemoteSwiftPackageReference "SimpleKeychain" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = CB0BEFA22D16F28C00BB7C30 /* Products */;
@@ -373,6 +377,14 @@
 				minimumVersion = 8.1.3;
 			};
 		};
+		CB3BEC3F2D17077C0000C304 /* XCRemoteSwiftPackageReference "SimpleKeychain" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/auth0/SimpleKeychain";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.2.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -400,6 +412,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = CB0BEFCE2D1704C100BB7C30 /* XCRemoteSwiftPackageReference "Kingfisher" */;
 			productName = Kingfisher;
+		};
+		CB3BEC402D17077C0000C304 /* SimpleKeychain */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CB3BEC3F2D17077C0000C304 /* XCRemoteSwiftPackageReference "SimpleKeychain" */;
+			productName = SimpleKeychain;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
