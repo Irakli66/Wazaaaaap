@@ -15,7 +15,6 @@ struct SignupView: View {
     @State private var password = ""
 
     var body: some View {
-        NavigationStack {
             VStack(spacing: 0) {
                 navigationBar
                     .padding(.bottom, 20)
@@ -72,7 +71,6 @@ struct SignupView: View {
 
                 Spacer(minLength: 20)
             }
-        }
     }
 
     private var navigationBar: some View {
