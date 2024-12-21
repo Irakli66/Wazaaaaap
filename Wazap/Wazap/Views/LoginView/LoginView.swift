@@ -15,14 +15,11 @@ struct LoginView: View {
     var body: some View {
         NavigationStack {
             VStack {
-                // image
-                Image("monkey")
+                Image("Wazaaaaap")
                     .resizable()
                     .scaledToFit()
-                    .frame(width: 100, height: 120)
-                    .padding(.vertical, 32)
-                
-                //form field
+                    .frame(width: 233)
+                Spacer()
                 VStack(spacing: 24) {
                     InputView(text: $email,
                               title: "Email",
@@ -35,13 +32,9 @@ struct LoginView: View {
                               isSecureField: true)
                 }
                 .padding(.horizontal)
-                .padding(.top, 12)
-                
-                //sing in button
-                
                 NavigationLink {
                     SignupView()
-                        .navigationBarBackButtonHidden(true)
+                        //.navigationBarBackButtonHidden(true)
                 } label: {
                     HStack(spacing: 3) {
                         Text("New To Wazaaaaap?")
@@ -54,33 +47,23 @@ struct LoginView: View {
                 }
                 .foregroundStyle(.customText)
                 .padding()
-                
                 Spacer()
-                
-                //sing in buttons
                 
                 VStack(spacing: 10) {
                     Button {
                         Task {
-                            //try await viewModel.sinIn(withEmail: email, password: password)
+                            //try await viewModel.sinInWithGoogle(withEmail: email, password: password)
                         }
                     } label: {
                         HStack {
-                            Image(systemName: "g.circle")
+                            Image("Google")
                             Text("Continue with Goole")
                                 .fontWeight(.semibold)
-                                .font(.system(size: 20))
+                                .makeTextStyle(color: .gray, size:20)
                         }
-                        .foregroundColor(.black)
-                        .frame(width: UIScreen.main.bounds.width - 40 , height: 64)
-                        .background(.white)
-                        .cornerRadius(10)
-                        .shadow(color: .gray.opacity(0.5), radius: 1)
+                        .makeButtonStyle(tintColor: Color.textBg, backgroundColor: .white, width: UIScreen.main.bounds.width - 40, height: 64)
+                        .shadow(color: .gray.opacity(0.5), radius: 2)
                     }
-                    
-                    
-                    
-                    
                     Button {
                         Task {
                             //try await viewModel.sinIn(withEmail: email, password: password)
@@ -91,19 +74,11 @@ struct LoginView: View {
                                 .fontWeight(.semibold)
                                 .font(.system(size: 20))
                         }
-                        .foregroundColor(.white)
-                        .frame(width: UIScreen.main.bounds.width - 40 , height: 64)
                     }
                     //.disabled(!formIsValid)
                     //.opacity(formIsValid ? 1.0 : 0.5)
-                    .foregroundColor(.white)
-                    .frame(width: UIScreen.main.bounds.width - 40 , height: 64)
-                    .background(Color(.systemBlue))
-                    .cornerRadius(10)
-
+                    .makeButtonStyle(tintColor: Color.textBg, backgroundColor: Color.customBlue, width: UIScreen.main.bounds.width - 40, height: 64)
                 }
-                
-                
                 .padding(.top, 24)
             }
         }
