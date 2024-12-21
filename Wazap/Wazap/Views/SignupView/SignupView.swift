@@ -50,6 +50,27 @@ struct SignupView: View {
                 }
                 .padding(.horizontal, 20)
                 .padding(.top, 10)
+                
+                Spacer().frame(height: 153)
+                
+                Button {
+                    Task {
+                        // Sign-up
+                    }
+                } label: {
+                    HStack {
+                        Text("Sign Up")
+                            .fontWeight(.semibold)
+                            .font(.system(size: 20))
+                    }
+                    .foregroundColor(.white)
+                    .frame(maxWidth: .infinity, minHeight: 64)
+                }
+                .background(Color(.systemBlue))
+                .cornerRadius(10)
+                .padding(.horizontal, 20)
+
+                Spacer(minLength: 20)
             }
         }
     }
