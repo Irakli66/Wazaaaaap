@@ -1,5 +1,5 @@
 //
-//  TextFontAndColorModifier.swift
+//  TextUIModifier.swift
 //  Wazap
 //
 //  Created by Apple on 21.12.24.
