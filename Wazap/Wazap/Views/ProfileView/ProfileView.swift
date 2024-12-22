@@ -7,6 +7,7 @@
 
 import Foundation
 import SwiftUI
+import Kingfisher
 
 
 struct ProfileView: View {
@@ -15,6 +16,8 @@ struct ProfileView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var showImagePicker = false
     @State private var selectedImage: UIImage?
+    @State private var fullName: String = ""
+    @State private var username: String = ""
     
     var body: some View {
         NavigationStack {
@@ -33,12 +36,14 @@ struct ProfileView: View {
                         }
                     }
                 }
-                //                .onAppear {
-                //                    Task {
-                //                        await viewModel.getUser
-                //                    }
-                //                }
-                .background(Color.gray.opacity(0.1))
+                .onAppear {
+                    Task {
+                        await viewModel.getUserInfo()
+                        fullName = viewModel.user?.fullName ?? ""
+                        username = viewModel.user?.username ?? ""
+                    }
+                }
+                .background(.customBackground)
                 .overlay(loadingOverlay)
             } else {
                 LoginView()
@@ -49,9 +54,9 @@ struct ProfileView: View {
     private var navigationBar: some View {
         HStack {
             Button(action: { dismiss() }) {
-                Image("Arrow")
+                Image(systemName: "chevron.backward")
+                    .font(.system(size: 20, weight: .semibold))
                     .foregroundColor(.blue)
-                    .frame(width: 20,height: 28)
             }
             
             Spacer()
@@ -62,10 +67,14 @@ struct ProfileView: View {
             Spacer()
             
             Button("Save") {
-                viewModel.saveProfile()
+                print(selectedImage ?? "")
+                Task {
+                    let _ = await viewModel.saveProfile(fullName: fullName, username: username, profileImage: selectedImage)
+                    await viewModel.getUserInfo()
+                }
             }
             .font(.system(size: 16, weight: .bold))
-            .foregroundColor(Color(hex: "#5159F6"))
+            .foregroundColor(.customBlue)
             .frame(width: 38,height: 22)
         }
         .padding(.horizontal, 16)
@@ -81,6 +90,26 @@ struct ProfileView: View {
             if let image = selectedImage {
                 Image(uiImage: image)
                     .resizable()
+                    .scaledToFill()
+                    .frame(width: 120, height: 120)
+                    .clipShape(Circle())
+                    .overlay(
+                        Image(systemName: "camera")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 40, height: 40)
+                            .foregroundColor(.white)
+                    )
+            } else if let photoUrl = viewModel.user?.photoUrl, let url = URL(string: photoUrl) {
+                KFImage(url)
+                    .resizable()
+                    .placeholder {
+                        Image("Avatar")
+                            .resizable()
+                            .scaledToFill()
+                            .frame(width: 120, height: 120)
+                            .clipShape(Circle())
+                    }
                     .scaledToFill()
                     .frame(width: 120, height: 120)
                     .clipShape(Circle())
@@ -119,10 +148,7 @@ struct ProfileView: View {
                 .font(.system(size: 14))
             
             HStack {
-                TextField("Full name", text: Binding(
-                    get: { viewModel.profile.fullName },
-                    set: { viewModel.updateFullName($0) }
-                ))
+                TextField("Full name", text: $fullName)
                 Image("N-badge")
             }
             .padding()
@@ -141,13 +167,10 @@ struct ProfileView: View {
                 .foregroundColor(.gray)
                 .font(.system(size: 14))
                 .padding(.top, 19)
-            TextField("Username", text: Binding(
-                get: { viewModel.profile.username },
-                set: { viewModel.updateUsername($0) }
-            ))
-            .padding()
-            .background(Color.white)
-            .cornerRadius(10)
+            TextField("Username", text: $username)
+                .padding()
+                .background(Color.white)
+                .cornerRadius(10)
         }
         .padding(.horizontal)
     }
@@ -181,18 +204,19 @@ struct ProfileView: View {
             Text(title)
                 .padding()
                 .frame(maxWidth: .infinity)
-                .background(isSelected ? Color(hex: "#5159F6") : Color.white)
+                .background(isSelected ? .customBlue : Color.white)
                 .foregroundColor(isSelected ? .white : .black)
                 .cornerRadius(10)
         }
     }
+    
     
     private var logoutButton: some View {
         Button(action: logOut) {
             Text("Log out")
                 .foregroundColor(.white)
                 .frame(width: 128, height: 40)
-                .background(Color.red)
+                .background(.customRed)
                 .cornerRadius(10)
                 .padding(.top, 192)
                 .font(.system(size: 20, weight: .bold))
@@ -218,35 +242,12 @@ struct ProfileView: View {
                             .tint(.white)
                             .scaleEffect(1.5)
                     )
-                
             }
         }
     }
     
 }
 
-
-extension Color {
-    init(hex: String) {
-        var hexSanitized = hex.trimmingCharacters(in: .whitespacesAndNewlines)
-        if hexSanitized.hasPrefix("#") {
-            hexSanitized.removeFirst()
-        }
-        
-        var rgb: UInt64 = 0
-        Scanner(string: hexSanitized).scanHexInt64(&rgb)
-        
-        let red = Double((rgb & 0xFF0000) >> 16) / 255.0
-        let green = Double((rgb & 0x00FF00) >> 8) / 255.0
-        let blue = Double(rgb & 0x0000FF) / 255.0
-        
-        self.init(red: red, green: green, blue: blue)
-    }
-}
-//
-//struct ProfileView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        ProfileView()
-//    }
+//#Preview {
+//    ProfileView()
 //}
-//

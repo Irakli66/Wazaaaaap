@@ -2,6 +2,10 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>CLIENT_ID</key>
+	<string>759196519230-p2ieud1bijj7eeae93t2g260f0odqllb.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.759196519230-p2ieud1bijj7eeae93t2g260f0odqllb</string>
 	<key>API_KEY</key>
 	<string>AIzaSyA0drhXhoFVaNOUfGrI4mhqEGWIgT6varQ</string>
 	<key>GCM_SENDER_ID</key>
@@ -26,5 +30,7 @@
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
 	<string>1:759196519230:ios:3c7d893d54bee0f6807a6f</string>
+	<key>DATABASE_URL</key>
+	<string>https://wazap-a193c-default-rtdb.firebaseio.com</string>
 </dict>
 </plist>
