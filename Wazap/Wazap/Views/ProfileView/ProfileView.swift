@@ -7,6 +7,7 @@
 
 import Foundation
 import SwiftUI
+import Kingfisher
 
 
 struct ProfileView: View {
@@ -68,7 +69,7 @@ struct ProfileView: View {
             Button("Save") {
                 print(selectedImage ?? "")
                 Task {
-                    let _ = await viewModel.saveProfile(fullName: fullName, username: username)
+                    let _ = await viewModel.saveProfile(fullName: fullName, username: username, profileImage: selectedImage)
                     await viewModel.getUserInfo()
                 }
             }
@@ -89,6 +90,26 @@ struct ProfileView: View {
             if let image = selectedImage {
                 Image(uiImage: image)
                     .resizable()
+                    .scaledToFill()
+                    .frame(width: 120, height: 120)
+                    .clipShape(Circle())
+                    .overlay(
+                        Image(systemName: "camera")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 40, height: 40)
+                            .foregroundColor(.white)
+                    )
+            } else if let photoUrl = viewModel.user?.photoUrl, let url = URL(string: photoUrl) {
+                KFImage(url)
+                    .resizable()
+                    .placeholder {
+                        Image("Avatar")
+                            .resizable()
+                            .scaledToFill()
+                            .frame(width: 120, height: 120)
+                            .clipShape(Circle())
+                    }
                     .scaledToFill()
                     .frame(width: 120, height: 120)
                     .clipShape(Circle())
@@ -227,6 +248,6 @@ struct ProfileView: View {
     
 }
 
-#Preview {
-    ProfileView()
-}
+//#Preview {
+//    ProfileView()
+//}
