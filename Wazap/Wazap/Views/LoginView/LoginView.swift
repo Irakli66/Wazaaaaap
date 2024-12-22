@@ -18,7 +18,7 @@ struct LoginView: View {
     var body: some View {
         NavigationStack {
             if userStatus {
-                ChatView()
+                ProfileView()
             } else {
                 VStack {
                     Image("Wazaaaaap")
