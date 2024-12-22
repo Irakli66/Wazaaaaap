@@ -134,7 +134,6 @@ struct ChatView: View {
                     .onChange(of: viewModel.messageText) {
                         calculateTextHeight()
                     }
-                    .frame(height: 36)
                 
                 Button(action: {
                     viewModel.sendMessage()
