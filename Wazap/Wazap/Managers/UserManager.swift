@@ -10,6 +10,7 @@ import FirebaseFirestore
 protocol UserManagerProtocol {
     func saveUserToFirestore(uid: String, email: String, fullname: String, username: String) async throws
     func getUser(by uid: String) async throws -> UserModel
+    func updateUserFullnameAndUsername(uid: String, fullname: String, username: String) async throws
 }
 
 final class UserManager: UserManagerProtocol {
@@ -25,6 +26,15 @@ final class UserManager: UserManagerProtocol {
             "photoUrl": ""
         ]
         try await db.collection("users").document(uid).setData(userData)
+    }
+    
+    func updateUserFullnameAndUsername(uid: String, fullname: String, username: String) async throws {
+        let dataToUpdate: [String: Any] = [
+            "fullName": fullname,
+            "username": username
+        ]
+        
+        try await db.collection("users").document(uid).updateData(dataToUpdate)
     }
     
     func getUser(by uid: String) async throws -> UserModel {
