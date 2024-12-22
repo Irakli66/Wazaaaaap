@@ -13,6 +13,7 @@ struct SignupView: View {
     @State private var userName = ""
     @State private var email = ""
     @State private var password = ""
+    @State private var confirmPassword = ""
 
     var body: some View {
             VStack(spacing: 0) {
@@ -41,11 +42,18 @@ struct SignupView: View {
                               isSecureField: true)
                     .padding(.top, 7)
                     
-                    InputView(text: $password,
+                    InputView(text: $confirmPassword,
                               title: "Confirm Password",
                               placeholder: "Enter your Password",
                               isSecureField: true)
                     .padding(.top, 7)
+                    
+                    if !passwordsMatch {
+                        Text("Passwords don't match")
+                            .font(.system(size: 14))
+                            .foregroundColor(.red)
+                            .padding(.top, 5)
+                    }
                 }
                 .padding(.horizontal, 20)
                 .padding(.top, 10)
@@ -54,7 +62,9 @@ struct SignupView: View {
                 
                 Button {
                     Task {
-                        // Sign-up
+                        if passwordsMatch {
+                            // signup
+                        }
                     }
                 } label: {
                     HStack {
@@ -65,7 +75,7 @@ struct SignupView: View {
                     .foregroundColor(.white)
                     .frame(maxWidth: .infinity, minHeight: 64)
                 }
-                .background(Color(.systemBlue))
+                .background(Color("customBlue"))
                 .cornerRadius(10)
                 .padding(.horizontal, 20)
 
@@ -85,6 +95,7 @@ struct SignupView: View {
         .padding(.horizontal, 16)
         .padding(.top, 10)
         .padding(.bottom, 10)
+        .navigationBarHidden(true) 
     }
 
     private var backButton: some View {
@@ -93,8 +104,12 @@ struct SignupView: View {
         }) {
             Image(systemName: "chevron.backward")
                 .font(.system(size: 20))
-                .foregroundColor(.blue)
+                .foregroundColor(Color("customBlue"))
         }
+    }
+    
+    private var passwordsMatch: Bool {
+        password == confirmPassword || confirmPassword.isEmpty
     }
 }
 
