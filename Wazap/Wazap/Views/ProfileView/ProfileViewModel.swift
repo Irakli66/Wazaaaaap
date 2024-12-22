@@ -5,7 +5,7 @@
 //  Created by Imac on 21.12.24.
 //
 
-import Foundation
+import SwiftUI
 import Combine
 
 class ProfileViewModel: ObservableObject {
@@ -36,25 +36,32 @@ class ProfileViewModel: ObservableObject {
         )
     }
     
-    func saveProfile(fullName: String, username: String) async {
+    func saveProfile(fullName: String, username: String, profileImage: UIImage?) async {
         guard let userId = authenticationManager.getCurrentUser()?.uid else {
             return
         }
         
-        DispatchQueue.main.async {
-                self.isLoading = true
-            }
+        DispatchQueue.main.async { [weak self] in
+            self?.isLoading = true
+            
+        }
         
         do {
-            try await userManager.updateUserFullnameAndUsername(uid: userId, fullname: fullName, username: username)
-            DispatchQueue.main.async {
-                self.isLoading = false
+            var profileImageUrl: String? = nil
+            
+            if let profileImage = profileImage {
+                profileImageUrl = try await userManager.uploadProfileImage(image: profileImage, userId: userId)
             }
+            
+            try await userManager.updateUserFullnameAndUsername(uid: userId, fullname: fullName, username: username, imageUrl: profileImageUrl)
+            
+            DispatchQueue.main.async { [weak self] in
+                self?.isLoading = false
+            }
+            
+            print("Profile updated successfully!")
         } catch {
-            DispatchQueue.main.async {
-                self.isLoading = false
-                print("Error updating user data: \(error)")
-            }
+            print("Error updating profile: \(error.localizedDescription)")
         }
     }
     
