@@ -94,7 +94,7 @@ struct SignupView: View {
                                                       confirmPassword: confirmPassword)
                     if errors.isEmpty {
                         Task {
-                            await viewModel.signUp(email: email, password: password, fullName: fullName, userName: userName, confirmPassword: confirmPassword)
+                            let _ = await viewModel.signUp(email: email, password: password, fullName: fullName, userName: userName, confirmPassword: confirmPassword)
                             email = ""
                             userName = ""
                             fullName = ""
