@@ -34,7 +34,8 @@ class ChatViewModel: ObservableObject {
                         id: doc.documentID,
                         username: data["username"] as? String ?? "Anonymous",
                         profilePictureURL: data["profilePictureURL"] as? String ?? "",
-                        text: data["text"] as? String ?? ""
+                        text: data["text"] as? String ?? "",
+                        userID: data["userID"] as? Int ?? -1
                     )
                 }
             }

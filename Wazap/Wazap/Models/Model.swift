@@ -12,4 +12,5 @@ struct ChatMessage: Identifiable, Equatable {
     var username: String
     var profilePictureURL: String
     var text: String
+    let userID: Int
 }
