@@ -49,6 +49,8 @@ struct ProfileView: View {
                 LoginView()
             }
         }
+        .navigationBarHidden(true)
+        .navigationBarBackButtonHidden(true)
     }
     
     private var navigationBar: some View {

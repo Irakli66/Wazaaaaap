@@ -30,6 +30,7 @@ struct ChatView: View {
                         NavigationLink(destination: ProfileView()) {
                             Image("Settings")
                         }
+                        .navigationBarBackButtonHidden(true)
                     }
                     .frame(height: 50)
                     .padding(.horizontal, 15)
