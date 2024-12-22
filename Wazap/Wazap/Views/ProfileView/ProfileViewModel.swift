@@ -12,13 +12,15 @@ class ProfileViewModel: ObservableObject {
     @Published private(set) var profile: ProfileModel
     @Published var isLoading = false
     @Published var errorMessage: String?
+    private let authenticationManager: AuthenticationManagerProtocol
     
     init(profile: ProfileModel = ProfileModel(
         fullName: "John Doe",
         username: "@jondexa",
         selectedLanguage: .english
-    )) {
+    ), authenticationManager: AuthenticationManagerProtocol = AuthenticationManager()) {
         self.profile = profile
+        self.authenticationManager = authenticationManager
     }
     
     // MARK: - Intent(s)
@@ -55,7 +57,7 @@ class ProfileViewModel: ObservableObject {
         }
     }
     
-    func logOut() {
-        // Handle logout logic
+    func signOut() throws  {
+        try authenticationManager.signOut()
     }
 }

@@ -11,27 +11,39 @@ import SwiftUI
 
 struct ProfileView: View {
     @StateObject private var viewModel = ProfileViewModel()
+    @State private var isLoggedIn: Bool = true
     @Environment(\.dismiss) private var dismiss
     @State private var showImagePicker = false
     @State private var selectedImage: UIImage?
     
     var body: some View {
-        VStack(spacing: 0) {
-            navigationBar
-            
-            ScrollView {
-                VStack() {
-                    profileImageSection
-                    fullNameSection
-                    usernameSection
-                    languageSection
-                    Spacer()
-                    logoutButton
+        NavigationStack {
+            if isLoggedIn {
+                VStack(spacing: 0) {
+                    navigationBar
+                    
+                    ScrollView {
+                        VStack() {
+                            profileImageSection
+                            fullNameSection
+                            usernameSection
+                            languageSection
+                            Spacer()
+                            logoutButton
+                        }
+                    }
                 }
+                //                .onAppear {
+                //                    Task {
+                //                        await viewModel.getUser
+                //                    }
+                //                }
+                .background(Color.gray.opacity(0.1))
+                .overlay(loadingOverlay)
+            } else {
+                LoginView()
             }
         }
-        .background(Color.gray.opacity(0.1))
-        .overlay(loadingOverlay)
     }
     
     private var navigationBar: some View {
@@ -58,8 +70,8 @@ struct ProfileView: View {
         }
         .padding(.horizontal, 16)
         .frame(height: 52)
-
-
+        
+        
     }
     
     private var profileImageSection: some View {
@@ -99,6 +111,7 @@ struct ProfileView: View {
         }
         .padding(.top, 16)
     }
+    
     private var fullNameSection: some View {
         VStack(alignment: .leading, spacing: 8) {
             Text("Full name")
@@ -118,8 +131,8 @@ struct ProfileView: View {
         }
         .padding(.horizontal)
         .padding(.top, 10)
-
-
+        
+        
     }
     
     private var usernameSection: some View {
@@ -145,7 +158,7 @@ struct ProfileView: View {
                 .foregroundColor(.gray)
                 .font(.system(size: 14))
                 .padding(.top, 39)
-
+            
             HStack(spacing: 50) {
                 languageButton(
                     title: ProfileModel.Language.georgian.rawValue,
@@ -175,14 +188,24 @@ struct ProfileView: View {
     }
     
     private var logoutButton: some View {
-        Button(action: viewModel.logOut) {
+        Button(action: logOut) {
             Text("Log out")
                 .foregroundColor(.white)
                 .frame(width: 128, height: 40)
                 .background(Color.red)
                 .cornerRadius(10)
                 .padding(.top, 192)
-                .font(.system(size: 20, weight: .bold))        }
+                .font(.system(size: 20, weight: .bold))
+        }
+    }
+    
+    private func logOut() {
+        do {
+            try viewModel.signOut()
+            isLoggedIn = false
+        } catch {
+            print("error \(error)")
+        }
     }
     
     private var loadingOverlay: some View {
@@ -220,10 +243,10 @@ extension Color {
         self.init(red: red, green: green, blue: blue)
     }
 }
-
-struct ProfileView_Previews: PreviewProvider {
-    static var previews: some View {
-        ProfileView()
-    }
-}
-
+//
+//struct ProfileView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        ProfileView()
+//    }
+//}
+//
