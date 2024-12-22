@@ -7,7 +7,26 @@
 
 import SwiftUI
 
-final class SignupViewModel: ObservableObject {    
+final class SignupViewModel: ObservableObject {
+    private let authenticationManager: AuthenticationManagerProtocol
+    private let userManager: UserManagerProtocol
+    
+    init(authenticationManager: AuthenticationManagerProtocol = AuthenticationManager(), userManager: UserManagerProtocol = UserManager()) {
+        self.authenticationManager = authenticationManager
+        self.userManager = userManager
+    }
+    
+    func signUp(email: String, password: String, fullName: String, userName: String, confirmPassword: String) async -> Bool {
+        do {
+            let user = try await authenticationManager.createUser(email: email, password: password)
+            try await userManager.saveUserToFirestore(uid: user.uid, email: email, fullname: fullName, username: userName)
+            return true
+        } catch {
+            print("Error signing up: \(error)")
+            return false
+        }
+    }
+    
     func validateFullName(_ fullname: String) -> Bool {
         let fullNameRegex = "^[A-Za-z\\s]+$"
         let predicate = NSPredicate(format: "SELF MATCHES %@", fullNameRegex)
@@ -66,6 +85,7 @@ final class SignupViewModel: ObservableObject {
         
         return errors
     }
+    
 }
 
 enum ValidationError: LocalizedError {
