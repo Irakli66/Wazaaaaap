@@ -8,7 +8,7 @@
 import FirebaseFirestore
 import SwiftUI
 import AVFoundation
-
+ 
 class ChatViewModel: ObservableObject {
     @Published var messages: [ChatMessage] = []
     @Published var messageText: String = ""
@@ -20,71 +20,87 @@ class ChatViewModel: ObservableObject {
     private var lastFetchedMessage: QueryDocumentSnapshot?
     private var firstFetchedMessage: QueryDocumentSnapshot?
     private let limit = 50
-
+ 
     init() {
         fetchInitialMessages()
     }
-
+ 
     func fetchInitialMessages() {
         db.collection("chats").document(chatRoomID).collection("messages")
             .order(by: "timestamp", descending: false)
             .limit(to: limit)
-            .getDocuments { [weak self] snapshot, error in
+            .addSnapshotListener { [weak self] snapshot, error in
                 guard let self = self, let documents = snapshot?.documents else {
-                    print("Error fetching initial messages: \(error?.localizedDescription ?? "Unknown error")")
+                    print("Error fetching messages: \(error?.localizedDescription ?? "Unknown error")")
                     return
                 }
-
+ 
                 self.messages = documents.compactMap { doc in
                     self.createMessage(from: doc)
                 }
-                self.lastFetchedMessage = documents.last
+                
                 self.firstFetchedMessage = documents.first
+                self.lastFetchedMessage = documents.last
             }
     }
-
+ 
+ 
     func fetchOlderMessages() {
         guard let firstFetchedMessage = firstFetchedMessage else { return }
-
+ 
         db.collection("chats").document(chatRoomID).collection("messages")
             .order(by: "timestamp", descending: false)
             .end(beforeDocument: firstFetchedMessage)
             .limit(toLast: limit)
             .getDocuments { [weak self] snapshot, error in
                 guard let self = self, let documents = snapshot?.documents else {
-                    print("Error fetching older messages: \(error?.localizedDescription ?? "Unknown error")")
+                    print("No older messages available or an error occurred: \(error?.localizedDescription ?? "Unknown error")")
                     return
                 }
-
+                
+                guard !documents.isEmpty else {
+                    print("No more older messages to fetch.")
+                    return
+                }
+ 
                 let olderMessages = documents.compactMap { doc in
                     self.createMessage(from: doc)
                 }
+                
                 self.messages.insert(contentsOf: olderMessages, at: 0)
                 self.firstFetchedMessage = documents.first
             }
     }
-
+ 
+ 
     func fetchNewerMessages() {
         guard let lastFetchedMessage = lastFetchedMessage else { return }
-
+ 
         db.collection("chats").document(chatRoomID).collection("messages")
             .order(by: "timestamp", descending: false)
             .start(afterDocument: lastFetchedMessage)
             .limit(to: limit)
             .getDocuments { [weak self] snapshot, error in
                 guard let self = self, let documents = snapshot?.documents else {
-                    print("Error fetching newer messages: \(error?.localizedDescription ?? "Unknown error")")
+                    print("No newer messages available or an error occurred: \(error?.localizedDescription ?? "Unknown error")")
                     return
                 }
-
+                
+                guard !documents.isEmpty else {
+                    print("No more newer messages to fetch.")
+                    return
+                }
+ 
                 let newerMessages = documents.compactMap { doc in
                     self.createMessage(from: doc)
                 }
+ 
                 self.messages.append(contentsOf: newerMessages)
                 self.lastFetchedMessage = documents.last
             }
     }
-
+ 
+ 
     private func createMessage(from doc: QueryDocumentSnapshot) -> ChatMessage {
         let data = doc.data()
         return ChatMessage(
@@ -95,7 +111,7 @@ class ChatViewModel: ObservableObject {
             userID: data["userID"] as? Int ?? -1
         )
     }
-
+ 
     func sendMessage() {
         guard !messageText.isEmpty else { return }
         
@@ -117,7 +133,7 @@ class ChatViewModel: ObservableObject {
         
         playAudio()
     }
-
+ 
     func playAudio() {
         guard let audioFilePath = Bundle.main.path(forResource: "sentmessage", ofType: "mp3") else {
             print("Audio file not found")
