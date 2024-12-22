@@ -57,7 +57,12 @@ struct LoginView: View {
                     VStack(spacing: 10) {
                         Button {
                             Task {
-                                // Add your Google Sign-In logic here
+                                do {
+                                    try await viewModel.signInGoogle()
+                                    userStatus = true
+                                } catch {
+                                    print(error)
+                                }
                             }
                         } label: {
                             HStack {

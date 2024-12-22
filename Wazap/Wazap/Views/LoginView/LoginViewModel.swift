@@ -5,6 +5,13 @@
 //  Created by irakli kharshiladze on 22.12.24.
 //
 import Foundation
+import GoogleSignIn
+import GoogleSignInSwift
+
+struct GoogleSignInResultModel {
+    let idToken: String
+    let accessToken: String
+}
 
 final class LoginViewModel: ObservableObject {
     private let authenticationManager: AuthenticationManagerProtocol
@@ -13,6 +20,20 @@ final class LoginViewModel: ObservableObject {
     init(authenticationManager: AuthenticationManagerProtocol = AuthenticationManager(), userManager: UserManagerProtocol = UserManager()) {
         self.authenticationManager = authenticationManager
         self.userManager = userManager
+    }
+    
+    func signInGoogle() async throws {
+        guard let topVC = await Utilities.shared.topViewController() else {
+            throw URLError(.cannotFindHost)
+        }
+        let gidSignInResult = try await GIDSignIn.sharedInstance.signIn(withPresenting: topVC)
+        
+        guard let idToken = gidSignInResult.user.idToken?.tokenString else { return }
+        let accessToken = gidSignInResult.user.accessToken.tokenString
+        
+        let tokens = GoogleSignInResultModel(idToken: idToken, accessToken: accessToken)
+        try await authenticationManager.signInWithGoogle(tokens: tokens)
+        
     }
     
     func signIn(email: String, password: String) async -> Bool {
