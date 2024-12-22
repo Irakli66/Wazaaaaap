@@ -66,6 +66,11 @@ struct ChatView: View {
                                             VStack {
                                                 KFImage(URL(string: message.profilePictureURL))
                                                     .resizable()
+                                                    .placeholder {
+                                                        Image("noAvatar")
+                                                            .resizable()
+                                                            .scaledToFill()
+                                                    }
                                                     .scaledToFill()
                                                     .frame(width: 32, height: 32)
                                                     .background(.green)
@@ -150,17 +155,18 @@ struct ChatView: View {
                 }
             }
             
+            Divider()
+            
             HStack {
-                TextEditor(text: $viewModel.messageText)
-                    .frame(height: max(40, min(textHeight, 120)))
-                    .cornerRadius(10)
-                    .scrollIndicators(.hidden)
-                    .autocorrectionDisabled()
-                    .padding(EdgeInsets(top: 8, leading: 8, bottom: 8, trailing: 8))
+                TextField("Type a message...", text: $viewModel.messageText)
+                    .frame(height: 36)
+                    .padding(.leading, 12)
                     .background(Color(.systemGray6))
-                    .onChange(of: viewModel.messageText) {
-                        calculateTextHeight()
-                    }
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 20)
+                            .stroke(Color(.systemGray4), lineWidth: 1)
+                    )
+                    .cornerRadius(20)
                 
                 Button(action: {
                     viewModel.sendMessage()
@@ -169,22 +175,12 @@ struct ChatView: View {
                 }
             }
             .padding(.horizontal, 15)
+            .padding(.bottom, 34)
+            .padding(.top, 8)
         }
         .onTapGesture {
             visibleEmojiMessageID = nil
         }
-    }
-    
-    private func calculateTextHeight() {
-        let size = CGSize(width: UIScreen.main.bounds.width - 80, height: .greatestFiniteMagnitude)
-        let attributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 16)]
-        let estimatedFrame = NSString(string: viewModel.messageText).boundingRect(
-            with: size,
-            options: .usesLineFragmentOrigin,
-            attributes: attributes,
-            context: nil
-        )
-        textHeight = max(40, estimatedFrame.height + 16)
     }
 }
 
