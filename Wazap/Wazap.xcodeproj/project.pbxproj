@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0415A0B02D18769B002C6067 /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = 0415A0AF2D18769B002C6067 /* FirebaseCore */; };
 		CB0BEFB62D16F81E00BB7C30 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = CB0BEFB52D16F81E00BB7C30 /* FirebaseAnalytics */; };
 		CB0BEFB82D16F81E00BB7C30 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = CB0BEFB72D16F81E00BB7C30 /* FirebaseAuth */; };
 		CB0BEFBA2D16F81E00BB7C30 /* FirebaseMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = CB0BEFB92D16F81E00BB7C30 /* FirebaseMessaging */; };
@@ -39,6 +40,7 @@
 				CB0BEFB62D16F81E00BB7C30 /* FirebaseAnalytics in Frameworks */,
 				CB0BEFB82D16F81E00BB7C30 /* FirebaseAuth in Frameworks */,
 				CB0BEFD02D1704C100BB7C30 /* Kingfisher in Frameworks */,
+				0415A0B02D18769B002C6067 /* FirebaseCore in Frameworks */,
 				CB5013842D183023000AA505 /* FirebaseFirestore in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -97,6 +99,7 @@
 				CB0BEFCF2D1704C100BB7C30 /* Kingfisher */,
 				CB3BEC402D17077C0000C304 /* SimpleKeychain */,
 				CB5013832D183023000AA505 /* FirebaseFirestore */,
+				0415A0AF2D18769B002C6067 /* FirebaseCore */,
 			);
 			productName = Wazap;
 			productReference = CB0BEFA12D16F28C00BB7C30 /* Wazap.app */;
@@ -399,6 +402,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		0415A0AF2D18769B002C6067 /* FirebaseCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CB0BEFB42D16F81E00BB7C30 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseCore;
+		};
 		CB0BEFB52D16F81E00BB7C30 /* FirebaseAnalytics */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = CB0BEFB42D16F81E00BB7C30 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
