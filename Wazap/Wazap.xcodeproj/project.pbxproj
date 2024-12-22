@@ -13,7 +13,7 @@
 		CB0BEFBD2D16FB9F00BB7C30 /* NetworkPackage in Frameworks */ = {isa = PBXBuildFile; productRef = CB0BEFBC2D16FB9F00BB7C30 /* NetworkPackage */; };
 		CB0BEFD02D1704C100BB7C30 /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = CB0BEFCF2D1704C100BB7C30 /* Kingfisher */; };
 		CB3BEC412D17077C0000C304 /* SimpleKeychain in Frameworks */ = {isa = PBXBuildFile; productRef = CB3BEC402D17077C0000C304 /* SimpleKeychain */; };
-		E3E84F4D2D1813E000CE1C8F /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = E3E84F4C2D1813E000CE1C8F /* FirebaseFirestore */; };
+		CB5013842D183023000AA505 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = CB5013832D183023000AA505 /* FirebaseFirestore */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -39,7 +39,7 @@
 				CB0BEFB62D16F81E00BB7C30 /* FirebaseAnalytics in Frameworks */,
 				CB0BEFB82D16F81E00BB7C30 /* FirebaseAuth in Frameworks */,
 				CB0BEFD02D1704C100BB7C30 /* Kingfisher in Frameworks */,
-				E3E84F4D2D1813E000CE1C8F /* FirebaseFirestore in Frameworks */,
+				CB5013842D183023000AA505 /* FirebaseFirestore in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -50,7 +50,7 @@
 			isa = PBXGroup;
 			children = (
 				CB0BEFA32D16F28C00BB7C30 /* Wazap */,
-				E3E84F4B2D1813E000CE1C8F /* Frameworks */,
+				CB5013822D183023000AA505 /* Frameworks */,
 				CB0BEFA22D16F28C00BB7C30 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -63,7 +63,7 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		E3E84F4B2D1813E000CE1C8F /* Frameworks */ = {
+		CB5013822D183023000AA505 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
 			);
@@ -96,7 +96,7 @@
 				CB0BEFBC2D16FB9F00BB7C30 /* NetworkPackage */,
 				CB0BEFCF2D1704C100BB7C30 /* Kingfisher */,
 				CB3BEC402D17077C0000C304 /* SimpleKeychain */,
-				E3E84F4C2D1813E000CE1C8F /* FirebaseFirestore */,
+				CB5013832D183023000AA505 /* FirebaseFirestore */,
 			);
 			productName = Wazap;
 			productReference = CB0BEFA12D16F28C00BB7C30 /* Wazap.app */;
@@ -429,7 +429,7 @@
 			package = CB3BEC3F2D17077C0000C304 /* XCRemoteSwiftPackageReference "SimpleKeychain" */;
 			productName = SimpleKeychain;
 		};
-		E3E84F4C2D1813E000CE1C8F /* FirebaseFirestore */ = {
+		CB5013832D183023000AA505 /* FirebaseFirestore */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = CB0BEFB42D16F81E00BB7C30 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseFirestore;

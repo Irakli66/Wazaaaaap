@@ -1,20 +1,13 @@
 //
 //  ChatView.swift
-//  wazaptest
+//  Wazap
 //
-//  Created by Beka on 21.12.24.
+//  Created by irakli kharshiladze on 21.12.24.
 //
 
 import SwiftUI
-import Kingfisher
 
 struct ChatView: View {
-    @StateObject private var viewModel = ChatViewModel()
-    @State var visibleEmojiMessageID: String?
-    @State private var textHeight: CGFloat = 40
-    @State private var isAtTop = false
-    @State private var isAtBottom = true
-    
     var body: some View {
         VStack(spacing: 0) {
             HStack {
