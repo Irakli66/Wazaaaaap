@@ -1,7 +1,7 @@
 import FirebaseFirestore
 import SwiftUI
 import AVFoundation
- 
+
 final class ChatViewModel: ObservableObject {
     @Published var messages: [ChatMessage] = []
     @Published var messageText: String = ""
@@ -15,7 +15,7 @@ final class ChatViewModel: ObservableObject {
     private let chatRoomID = "chatRoomID1"
     private var lastFetchedMessage: QueryDocumentSnapshot?
     private var firstFetchedMessage: QueryDocumentSnapshot?
-    private let limit = 100
+    private var limit = 100
     
     init(authManager: AuthenticationManagerProtocol = AuthenticationManager(), userManager: UserManagerProtocol = UserManager()) {
         self.authManager = authManager
@@ -24,6 +24,10 @@ final class ChatViewModel: ObservableObject {
     }
     
     func fetchInitialMessages() {
+        if messages.count <= limit {
+            limit += 100
+        }
+        
         db.collection("chats").document(chatRoomID).collection("messages")
             .order(by: "timestamp", descending: false)
             .limit(to: limit)
@@ -44,6 +48,10 @@ final class ChatViewModel: ObservableObject {
     
     func fetchOlderMessages() {
         guard let firstFetchedMessage = firstFetchedMessage else { return }
+        
+        if messages.count <= limit {
+            limit += 100
+        }
         
         db.collection("chats").document(chatRoomID).collection("messages")
             .order(by: "timestamp", descending: false)
@@ -71,6 +79,10 @@ final class ChatViewModel: ObservableObject {
     
     func fetchNewerMessages() {
         guard let lastFetchedMessage = lastFetchedMessage else { return }
+        
+        if messages.count <= limit {
+            limit *= 2
+        }
         
         db.collection("chats").document(chatRoomID).collection("messages")
             .order(by: "timestamp", descending: false)
@@ -180,6 +192,22 @@ final class ChatViewModel: ObservableObject {
     
     func playAudio() {
         guard let audioFilePath = Bundle.main.path(forResource: "sentmessage", ofType: "mp3") else {
+            print("Audio file not found")
+            return
+        }
+        
+        let audioURL = URL(fileURLWithPath: audioFilePath)
+        
+        do {
+            audioPlayer = try AVAudioPlayer(contentsOf: audioURL)
+            audioPlayer?.play()
+        } catch {
+            print("Failed to initialize audio player: \(error.localizedDescription)")
+        }
+    }
+    
+    func emojiSoundEffect() {
+        guard let audioFilePath = Bundle.main.path(forResource: "Pop", ofType: "wav") else {
             print("Audio file not found")
             return
         }
