@@ -147,6 +147,7 @@ struct ChatView: View {
                                                             Button {
                                                                 viewModel.updateMessageProperty(messageID: message.id, emoji: emoji, count: viewModel.getEmojiCountByID(messageID: message.id, emoji: emoji))
                                                                 visibleEmojiMessageID = nil
+                                                                viewModel.emojiSoundEffect()
                                                             } label: {
                                                                 Image(emoji)
                                                             }
