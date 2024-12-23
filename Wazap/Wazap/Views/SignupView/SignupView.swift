@@ -95,12 +95,14 @@ struct SignupView: View {
                                                           confirmPassword: confirmPassword)
                         if errors.isEmpty {
                             Task {
+                                
                                 let _ = await viewModel.signUp(email: email, password: password, fullName: fullName, userName: userName, confirmPassword: confirmPassword)
                                 email = ""
                                 userName = ""
                                 fullName = ""
                                 password = ""
                                 confirmPassword = ""
+                                self.presentationMode.wrappedValue.dismiss()
                             }
                         }
                     } label: {

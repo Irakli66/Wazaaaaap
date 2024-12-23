@@ -40,12 +40,10 @@ class ProfileViewModel: ObservableObject {
     
     func updateLanguage(_ language: AppLanguage) {
         selectedLanguage = language
-        print("Language updated to: \(selectedLanguage)")
     }
     
     func saveTheme() {
         isDarkTheme.toggle()
-        print("Theme updated: \(isDarkTheme ? "Dark" : "Light")")
     }
     
     func saveProfile(fullName: String, username: String, profileImage: UIImage?) async {
