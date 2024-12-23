@@ -91,7 +91,7 @@ struct ProfileView: View {
         .frame(height: 52)
         .overlay {
             if showToast {
-                ToastView(message: "Profile Image Saved Successfully")
+                ToastView(message: "Profile Updated")
                     .transition(.move(edge: .top).combined(with: .opacity))
                     .zIndex(1)
             }
@@ -280,19 +280,6 @@ struct ProfileView: View {
                             .scaleEffect(1.5)
                     )
             }
-        }
-    }
-
-    struct ToastView: View {
-        let message: String
-
-        var body: some View {
-            Text(message)
-                .padding()
-                .background(Color.green.opacity(0.8))
-                .foregroundColor(.white)
-                .cornerRadius(10)
-                .shadow(radius: 10)
         }
     }
 }
