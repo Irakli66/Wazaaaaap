@@ -24,9 +24,6 @@ final class ChatViewModel: ObservableObject {
     }
     
     func fetchInitialMessages() {
-        if messages.count <= limit {
-            limit += 100
-        }
         
         db.collection("chats").document(chatRoomID).collection("messages")
             .order(by: "timestamp", descending: false)
@@ -48,10 +45,6 @@ final class ChatViewModel: ObservableObject {
     
     func fetchOlderMessages() {
         guard let firstFetchedMessage = firstFetchedMessage else { return }
-        
-        if messages.count <= limit {
-            limit += 100
-        }
         
         db.collection("chats").document(chatRoomID).collection("messages")
             .order(by: "timestamp", descending: false)
@@ -79,10 +72,6 @@ final class ChatViewModel: ObservableObject {
     
     func fetchNewerMessages() {
         guard let lastFetchedMessage = lastFetchedMessage else { return }
-        
-        if messages.count <= limit {
-            limit *= 2
-        }
         
         db.collection("chats").document(chatRoomID).collection("messages")
             .order(by: "timestamp", descending: false)
