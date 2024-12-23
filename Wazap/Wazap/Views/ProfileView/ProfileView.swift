@@ -18,13 +18,19 @@ struct ProfileView: View {
     @State private var fullName: String = ""
     @State private var username: String = ""
     @State private var showToast = false
-
+    
     var body: some View {
         NavigationStack {
             if isLoggedIn {
                 VStack(spacing: 0) {
                     navigationBar
-
+                        .overlay {
+                            if showToast {
+                                ToastView(message: "Profile Image Saved Successfully")
+                                    .transition(.move(edge: .top).combined(with: .opacity))
+                                    .zIndex(1)
+                            }
+                        }
                     ScrollView {
                         VStack {
                             profileImageSection
@@ -53,51 +59,45 @@ struct ProfileView: View {
         .navigationBarHidden(true)
         .navigationBarBackButtonHidden(true)
     }
-
+    
     private var navigationBar: some View {
-        HStack {
-            Button(action: { dismiss() }) {
-                Image(systemName: "chevron.backward")
-                    .font(.system(size: 20, weight: .semibold))
-                    .foregroundColor(.blue)
-            }
-
-            Spacer()
-
-            Text(viewModel.selectedLanguage == .english ? "Your Profile" : "შენი პროფილი")
-                .font(.system(size: 20))
-
-            Spacer()
-
-            Button(viewModel.selectedLanguage == .english ? "Save" : "შენახვა") {
-                Task {
-                    let _ = await viewModel.saveProfile(fullName: fullName, username: username, profileImage: selectedImage)
-                    await viewModel.getUserInfo()
+        ZStack {
+            HStack {
+                Button(action: { dismiss() }) {
+                    Image(systemName: "chevron.backward")
+                        .font(.system(size: 20, weight: .semibold))
+                        .foregroundColor(.blue)
                 }
-                withAnimation {
-                    showToast = true
-                }
-                DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                
+                Spacer()
+                
+                Button(viewModel.selectedLanguage == .english ? "Save" : "შენახვა") {
+                    Task {
+                        let _ = await viewModel.saveProfile(fullName: fullName, username: username, profileImage: selectedImage)
+                        await viewModel.getUserInfo()
+                    }
                     withAnimation {
-                        showToast = false
+                        showToast = true
+                    }
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                        withAnimation {
+                            showToast = false
+                        }
                     }
                 }
             }
-        }
-        .font(.system(size: 16, weight: .bold))
-        .foregroundColor(.customBlue)
-        .frame(height: 22)
-        .padding(.horizontal, 16)
-        .frame(height: 52)
-        .overlay {
-            if showToast {
-                ToastView(message: "Profile Image Saved Successfully")
-                    .transition(.move(edge: .top).combined(with: .opacity))
-                    .zIndex(1)
-            }
+            .font(.system(size: 16, weight: .bold))
+            .foregroundColor(.customBlue)
+            .frame(height: 22)
+            .padding(.horizontal, 16)
+            .frame(height: 52)
+            
+            Text(viewModel.selectedLanguage == .english ? "Your Profile" : "შენი პროფილი")
+                .font(.system(size: 20))
+                .foregroundStyle(.customPageTitle)
         }
     }
-
+    
     private var profileImageSection: some View {
         Button(action: {
             showImagePicker = true
@@ -155,16 +155,15 @@ struct ProfileView: View {
         }
         .padding(.top, 16)
     }
-
+    
     private var fullNameSection: some View {
         VStack(alignment: .leading, spacing: 8) {
             Text(viewModel.selectedLanguage == .english ? "Full name" : "სრული სახელი")
                 .foregroundColor(.gray)
                 .font(.system(size: 14))
-
+            
             HStack {
                 TextField(viewModel.selectedLanguage == .english ? "Full name" : "სრული სახელი", text: $fullName)
-                Image("N-badge")
             }
             .padding()
             .background(.profileCustomField)
@@ -173,7 +172,7 @@ struct ProfileView: View {
         .padding(.horizontal)
         .padding(.top, 10)
     }
-
+    
     private var usernameSection: some View {
         VStack(alignment: .leading, spacing: 8) {
             Text(viewModel.selectedLanguage == .english ? "Username" : "ზედმეტსახელი")
@@ -187,21 +186,21 @@ struct ProfileView: View {
         }
         .padding(.horizontal)
     }
-
+    
     private var languageSection: some View {
         VStack {
             Text(viewModel.selectedLanguage == .english ? "Language" : "ენა")
                 .foregroundColor(.gray)
                 .font(.system(size: 14))
                 .padding(.top, 39)
-
+            
             HStack(spacing: 50) {
                 languageButton(
                     title: "ქართული",
                     isSelected: viewModel.selectedLanguage == .georgian,
                     action: { viewModel.updateLanguage(.georgian) }
                 )
-
+                
                 languageButton(
                     title: "English",
                     isSelected: viewModel.selectedLanguage == .english,
@@ -211,7 +210,7 @@ struct ProfileView: View {
             .padding(.horizontal, 40)
         }
     }
-
+    
     private func languageButton(title: String, isSelected: Bool, action: @escaping () -> Void) -> some View {
         Button(action: action) {
             Text(title)
@@ -222,15 +221,15 @@ struct ProfileView: View {
                 .cornerRadius(10)
         }
     }
-
+    
     private var themeSwitch: some View {
         HStack(spacing: 16) {
             Text(viewModel.selectedLanguage == .english ? "Theme" : "ფერი")
                 .foregroundColor(.primary)
                 .font(.system(size: 16, weight: .medium, design: .rounded))
-
+            
             Spacer()
-
+            
             Toggle(isOn: $viewModel.isDarkTheme) {
                 Text(viewModel.isDarkTheme ? viewModel.selectedLanguage == .english ? "Dark" : "მუქი" : viewModel.selectedLanguage == .english ? "Light" : "ღია")
                     .font(.system(size: 14, weight: .regular, design: .rounded))
@@ -247,7 +246,7 @@ struct ProfileView: View {
         .padding(.horizontal)
         .padding(.top, 25)
     }
-
+    
     private var logoutButton: some View {
         Button(action: logOut) {
             Text(viewModel.selectedLanguage == .english ? "Log out" : "გამოსვლა")
@@ -259,7 +258,7 @@ struct ProfileView: View {
                 .font(.system(size: 20, weight: .bold))
         }
     }
-
+    
     private func logOut() {
         do {
             try viewModel.signOut()
@@ -268,7 +267,7 @@ struct ProfileView: View {
             print("error \(error)")
         }
     }
-
+    
     private var loadingOverlay: some View {
         Group {
             if viewModel.isLoading {
@@ -282,10 +281,10 @@ struct ProfileView: View {
             }
         }
     }
-
+    
     struct ToastView: View {
         let message: String
-
+        
         var body: some View {
             Text(message)
                 .padding()
