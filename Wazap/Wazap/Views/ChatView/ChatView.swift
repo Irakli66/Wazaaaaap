@@ -100,8 +100,8 @@ struct ChatView: View {
                                                         }
                                                         .padding(.horizontal, 12)
                                                         .padding(.top, 8)
-                                                        .padding(.bottom, 20)
-                                                        .frame(minWidth: 150, alignment: .leading)
+                                                        .padding(.bottom, 16)
+                                                        .frame(minWidth: 170, alignment: .leading)
                                                         .background(.customBackground)
                                                         .clipShape(RoundedRectangle(cornerRadius: 16))
                                                         .onLongPressGesture(minimumDuration: 1) {
@@ -110,7 +110,7 @@ struct ChatView: View {
                                                         }
                                                         
                                                         LazyVGrid(
-                                                            columns: Array(repeating: GridItem(.adaptive(minimum: 30, maximum: 70), spacing: 4), count: 3),
+                                                            columns: Array(repeating: GridItem(.flexible(), spacing: 4), count: 3),
                                                             spacing: 4
                                                         ) {
                                                             ForEach(message.emojiArray) { emoji in
@@ -119,7 +119,7 @@ struct ChatView: View {
                                                                         .resizable()
                                                                         .frame(width: 20, height: 20)
                                                                     
-                                                                    if emoji.count > 1 {
+                                                                    if emoji.count > 0 {
                                                                         Text("\(emoji.count)")
                                                                             .font(.system(size: 13))
                                                                             .fixedSize()
@@ -133,7 +133,8 @@ struct ChatView: View {
                                                             }
                                                         }
                                                         .padding(.top, -12)
-                                                        .frame(maxWidth: 150, alignment: .leading)
+                                                        .padding(.leading, 8)
+                                                        .frame(maxWidth: 160, alignment: .leading)
                                                     }
                                                     .frame(maxWidth: 263, alignment: .leading)
                                                     
@@ -234,6 +235,7 @@ struct ChatView: View {
                 .padding(.bottom, 34)
                 .padding(.top, 8)
             }
+            .background(.white)
             .onTapGesture {
                 visibleEmojiMessageID = nil
             }
