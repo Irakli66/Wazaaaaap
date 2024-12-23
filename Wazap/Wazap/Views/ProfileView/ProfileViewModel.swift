@@ -14,7 +14,6 @@ enum AppLanguage: String {
 }
 
 class ProfileViewModel: ObservableObject {
-    @Published private(set) var profile: ProfileModel
     @Published var isLoading = false
     @Published var errorMessage: String?
     @Published var user: UserModel?
@@ -28,12 +27,7 @@ class ProfileViewModel: ObservableObject {
         set { selectedLanguageRawValue = newValue.rawValue }
     }
     
-    init(profile: ProfileModel = ProfileModel(
-        fullName: "John Doe",
-        username: "@jondexa",
-        selectedLanguage: .english
-    ), authenticationManager: AuthenticationManagerProtocol = AuthenticationManager(), userManager: UserManagerProtocol = UserManager()) {
-        self.profile = profile
+    init(authenticationManager: AuthenticationManagerProtocol = AuthenticationManager(), userManager: UserManagerProtocol = UserManager()) {
         self.authenticationManager = authenticationManager
         self.userManager = userManager
     }

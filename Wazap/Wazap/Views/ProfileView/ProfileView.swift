@@ -26,7 +26,7 @@ struct ProfileView: View {
                     navigationBar
                         .overlay {
                             if showToast {
-                                ToastView(message: "Profile Image Saved Successfully")
+                                ToastView(message: "Profile info changed")
                                     .transition(.move(edge: .top).combined(with: .opacity))
                                     .zIndex(1)
                             }
