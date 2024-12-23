@@ -1,13 +1,15 @@
 import FirebaseFirestore
 import SwiftUI
 import AVFoundation
-
+ 
 class ChatViewModel: ObservableObject {
     @Published var messages: [ChatMessage] = []
     @Published var messageText: String = ""
     var emojiArray = ["like", "love", "beer", "cry", "devil"]
     var audioPlayer: AVAudioPlayer?
-    let authManager = AuthenticationManager()
+    let authManager: AuthenticationManagerProtocol
+    let userManager: UserManagerProtocol
+    var userInfo: UserModel?
     
     private let db = Firestore.firestore()
     private let chatRoomID = "chatRoomID1"
@@ -15,7 +17,9 @@ class ChatViewModel: ObservableObject {
     private var firstFetchedMessage: QueryDocumentSnapshot?
     private let limit = 50
     
-    init() {
+    init(authManager: AuthenticationManagerProtocol = AuthenticationManager(), userManager: UserManagerProtocol = UserManager()) {
+        self.authManager = authManager
+        self.userManager = userManager
         fetchInitialMessages()
     }
     
@@ -139,7 +143,7 @@ class ChatViewModel: ObservableObject {
         messages.first(where: { $0.id == messageID })?.emoji.filter { $0.name == emoji }.count ?? 0
     }
     
-    func sendMessage() {
+    func sendMessage() async {
         guard !messageText.isEmpty else {
             print("Error: Message text is empty")
             return
@@ -150,9 +154,16 @@ class ChatViewModel: ObservableObject {
             return
         }
         
+        do {
+            let user = try await userManager.getUser(by: currentUser.uid)
+            userInfo = user
+        } catch {
+            print("error: \(error.localizedDescription)")
+        }
+        
         let messageData: [String: Any] = [
-            "username": currentUser.email ?? "Guest",
-            "profilePictureURL": currentUser.photoUrl ?? "https://example.com/default-profile.jpg",
+            "username": userInfo?.username ?? "Guest",
+            "profilePictureURL": userInfo?.photoUrl ?? currentUser.photoUrl ?? "https://example.com/default-profile.jpg",
             "text": messageText,
             "userID": currentUser.uid,
             "timestamp": FieldValue.serverTimestamp(),
