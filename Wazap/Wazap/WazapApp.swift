@@ -11,10 +11,26 @@ import FirebaseCore
 @main
 struct WazapApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
+    @State private var showSplashScreen = true
     
     var body: some Scene {
         WindowGroup {
-            LoginView()
+            ZStack {
+                LoginView()
+                
+                if showSplashScreen {
+                    LaunchScreen()
+                        .transition(.opacity)
+                }
+            }
+            .onAppear {
+                
+                DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                    withAnimation {
+                        showSplashScreen = false
+                    }
+                }
+            }
         }
     }
 }
