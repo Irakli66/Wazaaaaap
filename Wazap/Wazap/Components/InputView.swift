@@ -30,8 +30,10 @@ struct InputView: View {
                         
                         if isShow {
                             TextField(placeholder, text: $text)
+                                .foregroundStyle(.customPageTitle)
                         } else {
                             SecureField(placeholder, text: $text)
+                                .foregroundStyle(.customPageTitle)
                         }
                         
                         Button {
@@ -43,6 +45,7 @@ struct InputView: View {
                 } else {
                     TextField(placeholder, text: $text)
                         .font(.system(size: 15))
+                        .foregroundStyle(.customPageTitle)
                 }
             }
             .padding()

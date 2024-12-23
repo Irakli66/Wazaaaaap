@@ -56,34 +56,33 @@ struct ProfileView: View {
     }
     
     private var navigationBar: some View {
-        HStack {
-            Button(action: { dismiss() }) {
-                Image(systemName: "chevron.backward")
-                    .font(.system(size: 20, weight: .semibold))
-                    .foregroundColor(.blue)
+        ZStack {
+            HStack {
+                Button(action: { dismiss() }) {
+                    Image(systemName: "chevron.backward")
+                        .font(.system(size: 20, weight: .semibold))
+                        .foregroundColor(.blue)
+                }
+                
+                Spacer()
+                
+                Button(viewModel.selectedLanguage == .english ? "Save" : "შენახვა") {
+                    Task {
+                        let _ = await viewModel.saveProfile(fullName: fullName, username: username, profileImage: selectedImage)
+                        await viewModel.getUserInfo()
+                    }
+                }
+                .font(.system(size: 16, weight: .bold))
+                .foregroundColor(.customBlue)
+                .frame(height: 22)
             }
-            
-            Spacer()
+            .padding(.horizontal, 16)
+            .frame(height: 52)
             
             Text(viewModel.selectedLanguage == .english ? "Your Profile" : "შენი პროფილი")
                 .font(.system(size: 20))
-            
-            Spacer()
-            
-            Button(viewModel.selectedLanguage == .english ? "Save" : "შენახვა") {
-                Task {
-                    let _ = await viewModel.saveProfile(fullName: fullName, username: username, profileImage: selectedImage)
-                    await viewModel.getUserInfo()
-                }
-            }
-            .font(.system(size: 16, weight: .bold))
-            .foregroundColor(.customBlue)
-            .frame(height: 22)
         }
-        .padding(.horizontal, 16)
-        .frame(height: 52)
-        
-        
+        .frame(maxWidth: .infinity)
     }
     
     private var profileImageSection: some View {
@@ -155,7 +154,7 @@ struct ProfileView: View {
                 Image("N-badge")
             }
             .padding()
-            .background(Color.white)
+            .background(.profileCustomField)
             .cornerRadius(10)
         }
         .padding(.horizontal)
@@ -172,7 +171,7 @@ struct ProfileView: View {
                 .padding(.top, 19)
             TextField(viewModel.selectedLanguage == .english ? "Username" : "ზედმეტსახელი", text: $username)
                 .padding()
-                .background(Color.white)
+                .background(.profileCustomField)
                 .cornerRadius(10)
         }
         .padding(.horizontal)
@@ -246,7 +245,7 @@ struct ProfileView: View {
                 .frame(width: 128, height: 40)
                 .background(.customRed)
                 .cornerRadius(10)
-                .padding(.top, 100)
+                .padding(.top, 80)
                 .font(.system(size: 20, weight: .bold))
         }
     }
