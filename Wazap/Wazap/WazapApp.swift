@@ -11,10 +11,12 @@ import FirebaseCore
 @main
 struct WazapApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
+    @AppStorage("isDarkTheme") private var isDarkTheme = false
     
     var body: some Scene {
         WindowGroup {
             LoginView()
+                .preferredColorScheme(isDarkTheme ? .dark : .light)
         }
     }
 }

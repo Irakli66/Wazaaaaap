@@ -32,7 +32,7 @@ final class LoginViewModel: ObservableObject {
         let accessToken = gidSignInResult.user.accessToken.tokenString
         
         let tokens = GoogleSignInResultModel(idToken: idToken, accessToken: accessToken)
-        try await authenticationManager.signInWithGoogle(tokens: tokens)
+        let _ = try await authenticationManager.signInWithGoogle(tokens: tokens)
         
     }
     

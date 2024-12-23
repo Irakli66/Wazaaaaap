@@ -10,6 +10,7 @@ import SwiftUI
 import Kingfisher
 
 
+
 struct ProfileView: View {
     @StateObject private var viewModel = ProfileViewModel()
     @State private var isLoggedIn: Bool = true
@@ -31,6 +32,7 @@ struct ProfileView: View {
                             fullNameSection
                             usernameSection
                             languageSection
+                            themeSwitch
                             Spacer()
                             logoutButton
                         }
@@ -63,13 +65,12 @@ struct ProfileView: View {
             
             Spacer()
             
-            Text("Your profile")
+            Text(viewModel.selectedLanguage == .english ? "Your Profile" : "შენი პროფილი")
                 .font(.system(size: 20))
             
             Spacer()
             
-            Button("Save") {
-                print(selectedImage ?? "")
+            Button(viewModel.selectedLanguage == .english ? "Save" : "შენახვა") {
                 Task {
                     let _ = await viewModel.saveProfile(fullName: fullName, username: username, profileImage: selectedImage)
                     await viewModel.getUserInfo()
@@ -77,7 +78,7 @@ struct ProfileView: View {
             }
             .font(.system(size: 16, weight: .bold))
             .foregroundColor(.customBlue)
-            .frame(width: 38,height: 22)
+            .frame(height: 22)
         }
         .padding(.horizontal, 16)
         .frame(height: 52)
@@ -145,12 +146,12 @@ struct ProfileView: View {
     
     private var fullNameSection: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text("Full name")
+            Text( viewModel.selectedLanguage == .english ? "Full name" : "სრული სახელი")
                 .foregroundColor(.gray)
                 .font(.system(size: 14))
             
             HStack {
-                TextField("Full name", text: $fullName)
+                TextField(viewModel.selectedLanguage == .english ? "Full name" : "სრული სახელი", text: $fullName)
                 Image("N-badge")
             }
             .padding()
@@ -165,11 +166,11 @@ struct ProfileView: View {
     
     private var usernameSection: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text("Username")
+            Text(viewModel.selectedLanguage == .english ? "Username" : "ზედმეტსახელი")
                 .foregroundColor(.gray)
                 .font(.system(size: 14))
                 .padding(.top, 19)
-            TextField("Username", text: $username)
+            TextField(viewModel.selectedLanguage == .english ? "Username" : "ზედმეტსახელი", text: $username)
                 .padding()
                 .background(Color.white)
                 .cornerRadius(10)
@@ -179,21 +180,21 @@ struct ProfileView: View {
     
     private var languageSection: some View {
         VStack() {
-            Text("Language")
+            Text(viewModel.selectedLanguage == .english ? "Language" : "ენა")
                 .foregroundColor(.gray)
                 .font(.system(size: 14))
                 .padding(.top, 39)
             
             HStack(spacing: 50) {
                 languageButton(
-                    title: ProfileModel.Language.georgian.rawValue,
-                    isSelected: viewModel.profile.selectedLanguage == .georgian,
+                    title: "ქართული",
+                    isSelected: viewModel.selectedLanguage == .georgian,
                     action: { viewModel.updateLanguage(.georgian) }
                 )
                 
                 languageButton(
-                    title: ProfileModel.Language.english.rawValue,
-                    isSelected: viewModel.profile.selectedLanguage == .english,
+                    title: "English",
+                    isSelected: viewModel.selectedLanguage == .english,
                     action: { viewModel.updateLanguage(.english) }
                 )
             }
@@ -212,18 +213,44 @@ struct ProfileView: View {
         }
     }
     
+    private var themeSwitch: some View {
+        HStack(spacing: 16) {
+            Text(viewModel.selectedLanguage == .english ? "Theme" : "ფერი")
+                .foregroundColor(.primary)
+                .font(.system(size: 16, weight: .medium, design: .rounded))
+            
+            Spacer()
+            
+            Toggle(isOn: $viewModel.isDarkTheme) {
+                Text(viewModel.isDarkTheme ? viewModel.selectedLanguage == .english ? "Dark" : "მუქი" : viewModel.selectedLanguage == .english ? "Light" : "ღია")
+                    .font(.system(size: 14, weight: .regular, design: .rounded))
+                    .foregroundColor(.secondary)
+            }
+            .toggleStyle(SwitchToggleStyle(tint: Color.blue))
+        }
+        .padding()
+        .background(
+            RoundedRectangle(cornerRadius: 10)
+                .fill(Color(.systemGray6))
+                .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: 2)
+        )
+        .padding(.horizontal)
+        .padding(.top, 25)
+    }
+    
     
     private var logoutButton: some View {
         Button(action: logOut) {
-            Text("Log out")
+            Text(viewModel.selectedLanguage == .english ? "Log out" : "გამოსვლა")
                 .foregroundColor(.white)
                 .frame(width: 128, height: 40)
                 .background(.customRed)
                 .cornerRadius(10)
-                .padding(.top, 192)
+                .padding(.top, 100)
                 .font(.system(size: 20, weight: .bold))
         }
     }
+    
     
     private func logOut() {
         do {
