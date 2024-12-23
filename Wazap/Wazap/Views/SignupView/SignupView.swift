@@ -16,10 +16,24 @@ struct SignupView: View {
     @State private var confirmPassword = ""
     @StateObject private var viewModel = SignupViewModel()
     @State private var errors: [ValidationError] = []
+    @State private var showToast = false
+    @State private var showErrorToast = false
+
     
     var body: some View {
         VStack {
             navigationBar
+                .overlay {
+                    if showToast {
+                        ToastView(message: "signup in successfully")
+                            .transition(.move(edge: .top).combined(with: .opacity))
+                            .zIndex(1)
+                    } else if showErrorToast {
+                        ToastView(message: "wrong", bgColor: .red)
+                            .transition(.move(edge: .top).combined(with: .opacity))
+                            .zIndex(1)
+                    }
+                }
             ScrollView {
                 VStack(spacing: 20) {
                     VStack(spacing: 10) {
@@ -95,14 +109,25 @@ struct SignupView: View {
                                                           confirmPassword: confirmPassword)
                         if errors.isEmpty {
                             Task {
-                                
-                                let _ = await viewModel.signUp(email: email, password: password, fullName: fullName, userName: userName, confirmPassword: confirmPassword)
+                                let response = await viewModel.signUp(email: email, password: password, fullName: fullName, userName: userName, confirmPassword: confirmPassword)
                                 email = ""
                                 userName = ""
                                 fullName = ""
                                 password = ""
                                 confirmPassword = ""
-                                self.presentationMode.wrappedValue.dismiss()
+                                if response {
+                                    withAnimation {
+                                        showToast = true
+                                    }
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                                        self.presentationMode.wrappedValue.dismiss()
+                                    }
+                                } else {
+                                    showErrorToast = true
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                                        showErrorToast = false
+                                    }
+                                }
                             }
                         }
                     } label: {

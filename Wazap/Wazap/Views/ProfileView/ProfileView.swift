@@ -281,7 +281,6 @@ struct ProfileView: View {
             }
         }
     }
-    
     struct ToastView: View {
         let message: String
         
