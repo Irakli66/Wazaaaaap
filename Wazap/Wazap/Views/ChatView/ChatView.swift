@@ -110,7 +110,7 @@ struct ChatView: View {
                                                         }
                                                         
                                                         LazyVGrid(
-                                                            columns: Array(repeating: GridItem(.flexible(), spacing: 4), count: 3),
+                                                            columns: Array(repeating: GridItem(.adaptive(minimum: 30, maximum: 70), spacing: 4), count: 3),
                                                             spacing: 4
                                                         ) {
                                                             ForEach(message.emojiArray) { emoji in
