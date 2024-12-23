@@ -12,11 +12,8 @@ struct ChatView: View {
     @AppStorage("selectedLanguage") var selectedLanguageRawValue: String = AppLanguage.english.rawValue
     @StateObject private var viewModel = ChatViewModel()
     @State var visibleEmojiMessageID: String?
-    @State private var isAtTop = false
-    @State private var isAtBottom = true
     @State private var scrollProxy: ScrollViewProxy?
-    @State private var lastMessageID: String?
-    @State private var hasScrolledToBottom = false
+    @State private var shouldAutoScroll = true
     let currentUser = AuthenticationManager().getCurrentUser()
     
     var body: some View {
@@ -77,7 +74,7 @@ struct ChatView: View {
                                                     KFImage(URL(string: message.profilePictureURL))
                                                         .resizable()
                                                         .placeholder {
-                                                            Image("noAvatar")
+                                                            Image("Avatar")
                                                                 .resizable()
                                                                 .scaledToFill()
                                                         }
@@ -91,57 +88,59 @@ struct ChatView: View {
                                                 
                                                 VStack(alignment: .leading) {
                                                     VStack(alignment: .leading, spacing: 0) {
-                                                        ZStack(alignment: .bottomLeading) {
-                                                            VStack(alignment: .leading, spacing: 2) {
-                                                                Text("@\(message.username)")
-                                                                    .foregroundStyle(.customBlue)
-                                                                
-                                                                Text(message.text)
-                                                                
-                                                                Text(message.timestamp)
-                                                                    .font(.caption)
-                                                                    .foregroundColor(.gray)
-                                                            }
-                                                            .padding(.horizontal, 12)
-                                                            .padding(.top, 8)
-                                                            .padding(.bottom, 20)
-                                                            //                                                            .frame(maxWidth: .infinity, alignment: .leading)
-                                                            .background(.customBackground)
-                                                            .clipShape(RoundedRectangle(cornerRadius: 16))
-                                                            .onLongPressGesture(minimumDuration: 1) {
-                                                                visibleEmojiMessageID = message.id
-                                                            }
+                                                        VStack(alignment: .leading, spacing: 2) {
+                                                            Text("@\(message.username)")
+                                                                .foregroundStyle(.customBlue)
                                                             
-                                                            HStack(spacing: 4) {
-                                                                ForEach(message.emojiArray) { emoji in
-                                                                    HStack(spacing: 8) {
-                                                                        Image(emoji.name)
-                                                                            .resizable()
-                                                                            .frame(width: 20, height: 20)
-                                                                        
-                                                                        if emoji.count > 1 {
-                                                                            Text("\(emoji.count)")
-                                                                                .font(.system(size: 13))
-                                                                        }
-                                                                    }
-                                                                    .padding(.vertical, 6)
-                                                                    .padding(.horizontal, 8)
-                                                                    .background(.white)
-                                                                    .clipShape(RoundedRectangle(cornerRadius: 16))
-                                                                    .shadow(color: .black.opacity(0.2), radius: 5, y: 2)
-                                                                }
-                                                            }
-                                                            .padding(.bottom, -18)
+                                                            Text(message.text)
+                                                            
+                                                            Text(message.timestamp)
+                                                                .font(.caption)
+                                                                .foregroundColor(.gray)
                                                         }
+                                                        .padding(.horizontal, 12)
+                                                        .padding(.top, 8)
+                                                        .padding(.bottom, 20)
+                                                        .frame(minWidth: 150, alignment: .leading)
+                                                        .background(.customBackground)
+                                                        .clipShape(RoundedRectangle(cornerRadius: 16))
+                                                        .onLongPressGesture(minimumDuration: 1) {
+                                                            visibleEmojiMessageID = message.id
+                                                            shouldAutoScroll = false
+                                                        }
+                                                        
+                                                        LazyVGrid(
+                                                            columns: Array(repeating: GridItem(.flexible(), spacing: 4), count: 3),
+                                                            spacing: 4
+                                                        ) {
+                                                            ForEach(message.emojiArray) { emoji in
+                                                                HStack(spacing: 4) {
+                                                                    Image(emoji.name)
+                                                                        .resizable()
+                                                                        .frame(width: 20, height: 20)
+                                                                    
+                                                                    if emoji.count > 1 {
+                                                                        Text("\(emoji.count)")
+                                                                            .font(.system(size: 13))
+                                                                            .fixedSize()
+                                                                    }
+                                                                }
+                                                                .padding(.vertical, 6)
+                                                                .padding(.horizontal, 8)
+                                                                .background(.white)
+                                                                .clipShape(RoundedRectangle(cornerRadius: 16))
+                                                                .shadow(color: .black.opacity(0.2), radius: 5, y: 2)
+                                                            }
+                                                        }
+                                                        .padding(.top, -12)
+                                                        .frame(maxWidth: 150, alignment: .leading)
                                                     }
                                                     .frame(maxWidth: 263, alignment: .leading)
-                                                    
                                                     
                                                     HStack(alignment: .center) {
                                                         ForEach(viewModel.emojiArray, id: \.self) { emoji in
                                                             Button {
                                                                 viewModel.updateMessageProperty(messageID: message.id, emoji: emoji, count: viewModel.getEmojiCountByID(messageID: message.id, emoji: emoji))
-                                                                print(selectedLanguageRawValue)
                                                                 visibleEmojiMessageID = nil
                                                             } label: {
                                                                 Image(emoji)
@@ -185,21 +184,9 @@ struct ChatView: View {
                         }
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                         .onChange(of: viewModel.messages) { _, newMessages in
-                            if !hasScrolledToBottom {
-                                if let lastMessage = newMessages.last {
-                                    withAnimation {
-                                        proxy.scrollTo(lastMessage.id, anchor: .bottom)
-                                    }
-                                    lastMessageID = lastMessage.id
-                                    hasScrolledToBottom = true
-                                }
-                            } else {
-                                if let newLastMessage = newMessages.last,
-                                   lastMessageID != newLastMessage.id {
-                                    withAnimation {
-                                        proxy.scrollTo(newLastMessage.id, anchor: .bottom)
-                                    }
-                                    lastMessageID = newLastMessage.id
+                            if shouldAutoScroll, let lastMessage = newMessages.last {
+                                withAnimation {
+                                    proxy.scrollTo(lastMessage.id, anchor: .bottom)
                                 }
                             }
                         }
@@ -207,10 +194,15 @@ struct ChatView: View {
                     .coordinateSpace(name: "scroll")
                     .scrollIndicators(.hidden)
                     .onAppear {
-                        hasScrolledToBottom = false
                         scrollProxy = proxy
+                        shouldAutoScroll = true
                         viewModel.fetchInitialMessages()
                     }
+                    .simultaneousGesture(
+                        DragGesture().onChanged { _ in
+                            shouldAutoScroll = false
+                        }
+                    )
                 }
                 
                 Divider()
@@ -232,6 +224,7 @@ struct ChatView: View {
                     Button(action: {
                         Task {
                             await viewModel.sendMessage()
+                            shouldAutoScroll = true
                         }
                     }) {
                         Image("sendButton")
@@ -247,7 +240,3 @@ struct ChatView: View {
         }
     }
 }
-//
-//#Preview {
-//    ChatView()
-//}
