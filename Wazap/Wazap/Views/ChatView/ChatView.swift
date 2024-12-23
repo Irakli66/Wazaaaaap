@@ -24,17 +24,21 @@ struct ChatView: View {
                         Spacer()
                         
                         Image("logo")
+                            .renderingMode(.template)
+                            .foregroundColor(.customBlue)
                             .padding(.leading, 20)
                         
                         Spacer()
                         
                         NavigationLink(destination: ProfileView()) {
                             Image("Settings")
+                                .renderingMode(.template)
+                                .foregroundColor(.customBlue)
                         }
                     }
                     .frame(height: 50)
                     .padding(.horizontal, 15)
-                    .background(.customBackground)
+                    .background(.chatTextBg)
                 }
                 
                 ScrollViewReader { proxy in
@@ -102,7 +106,7 @@ struct ChatView: View {
                                                         .padding(.top, 8)
                                                         .padding(.bottom, 16)
                                                         .frame(minWidth: 170, alignment: .leading)
-                                                        .background(.customBackground)
+                                                        .background(.chatTextBg)
                                                         .clipShape(RoundedRectangle(cornerRadius: 16))
                                                         .onLongPressGesture(minimumDuration: 1) {
                                                             visibleEmojiMessageID = message.id
@@ -127,7 +131,7 @@ struct ChatView: View {
                                                                 }
                                                                 .padding(.vertical, 6)
                                                                 .padding(.horizontal, 8)
-                                                                .background(.white)
+                                                                .background(.customChatBg)
                                                                 .clipShape(RoundedRectangle(cornerRadius: 16))
                                                                 .shadow(color: .black.opacity(0.2), radius: 5, y: 2)
                                                             }
@@ -216,7 +220,7 @@ struct ChatView: View {
                     .autocorrectionDisabled()
                     .frame(height: 36)
                     .padding(.horizontal, 12)
-                    .background(Color(.systemGray6))
+                    .background(.customMessageField)
                     .overlay(
                         RoundedRectangle(cornerRadius: 20)
                             .stroke(Color(.systemGray4), lineWidth: 1)
@@ -249,7 +253,7 @@ struct ChatView: View {
                 .padding(.bottom, 34)
                 .padding(.top, 8)
             }
-            .background(.white)
+            .background(.customChatBg)
             .onTapGesture {
                 visibleEmojiMessageID = nil
             }

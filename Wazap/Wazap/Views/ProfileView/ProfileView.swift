@@ -38,7 +38,6 @@ struct ProfileView: View {
                             usernameSection
                             languageSection
                             themeSwitch
-                            Spacer()
                             logoutButton
                         }
                     }
@@ -240,7 +239,7 @@ struct ProfileView: View {
         .padding()
         .background(
             RoundedRectangle(cornerRadius: 10)
-                .fill(Color(.systemGray6))
+                .fill(.profileCustomField)
                 .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: 2)
         )
         .padding(.horizontal)
@@ -254,9 +253,9 @@ struct ProfileView: View {
                 .frame(width: 128, height: 40)
                 .background(.customRed)
                 .cornerRadius(10)
-                .padding(.top, 100)
                 .font(.system(size: 20, weight: .bold))
         }
+        .padding(.top, 100)
     }
     
     private func logOut() {

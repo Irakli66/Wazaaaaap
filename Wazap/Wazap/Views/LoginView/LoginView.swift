@@ -29,6 +29,8 @@ struct LoginView: View {
                 VStack {
                     Image("Wazaaaaap")
                         .resizable()
+                        .renderingMode(.template)
+                        .foregroundColor(.customBlue)
                         .scaledToFit()
                         .frame(width: 233)
                         .overlay {
@@ -120,7 +122,7 @@ struct LoginView: View {
                                     .font(.system(size: 20))
                             }
                         }
-                        .makeButtonStyle(tintColor: Color.textBg, backgroundColor: Color.customBlue, width: UIScreen.main.bounds.width - 40, height: 64)
+                        .makeButtonStyle(tintColor: .white, backgroundColor: Color.customBlue, width: UIScreen.main.bounds.width - 40, height: 64)
                         .disabled(!formIsValid)
                         .opacity(formIsValid ? 1.0 : 0.5)
                     }
