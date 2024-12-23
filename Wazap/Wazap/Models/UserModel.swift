@@ -6,7 +6,14 @@
 //
 
 import Foundation
+import FirebaseFirestore
 
-struct UserModel {
-    
+struct UserModel: Identifiable, Decodable {
+    @DocumentID var id: String?
+    let uid: String
+    let email: String
+    let fullName: String
+    let username: String
+    let createdAt: Date
+    let photoUrl: String
 }
