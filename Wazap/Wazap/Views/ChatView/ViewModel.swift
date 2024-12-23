@@ -1,21 +1,25 @@
 import FirebaseFirestore
 import SwiftUI
 import AVFoundation
-
-class ChatViewModel: ObservableObject {
+ 
+final class ChatViewModel: ObservableObject {
     @Published var messages: [ChatMessage] = []
     @Published var messageText: String = ""
     var emojiArray = ["like", "love", "beer", "cry", "devil"]
     var audioPlayer: AVAudioPlayer?
-    let authManager = AuthenticationManager()
+    let authManager: AuthenticationManagerProtocol
+    let userManager: UserManagerProtocol
+    var userInfo: UserModel?
     
     private let db = Firestore.firestore()
     private let chatRoomID = "chatRoomID1"
     private var lastFetchedMessage: QueryDocumentSnapshot?
     private var firstFetchedMessage: QueryDocumentSnapshot?
-    private let limit = 50
+    private let limit = 100
     
-    init() {
+    init(authManager: AuthenticationManagerProtocol = AuthenticationManager(), userManager: UserManagerProtocol = UserManager()) {
+        self.authManager = authManager
+        self.userManager = userManager
         fetchInitialMessages()
     }
     
@@ -139,21 +143,23 @@ class ChatViewModel: ObservableObject {
         messages.first(where: { $0.id == messageID })?.emoji.filter { $0.name == emoji }.count ?? 0
     }
     
-    func sendMessage() {
-        guard !messageText.isEmpty else {
-            print("Error: Message text is empty")
-            return
-        }
-        
+    func sendMessage() async {
         guard let currentUser = authManager.getCurrentUser() else {
             print("Error: No user is currently logged in")
             return
         }
         
+        do {
+            let user = try await userManager.getUser(by: currentUser.uid)
+            userInfo = user
+        } catch {
+            print("error: \(error.localizedDescription)")
+        }
+        
         let messageData: [String: Any] = [
-            "username": currentUser.email ?? "Guest",
-            "profilePictureURL": currentUser.photoUrl ?? "https://example.com/default-profile.jpg",
-            "text": messageText,
+            "username": userInfo?.username ?? "Guest",
+            "profilePictureURL": userInfo?.photoUrl ?? currentUser.photoUrl ?? "https://example.com/default-profile.jpg",
+            "text": messageText.isEmpty ? "🦦" : messageText,
             "userID": currentUser.uid,
             "timestamp": FieldValue.serverTimestamp(),
             "emoji": []

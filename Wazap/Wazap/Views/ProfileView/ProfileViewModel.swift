@@ -8,13 +8,25 @@
 import SwiftUI
 import Combine
 
+enum AppLanguage: String {
+    case georgian = "ქართული"
+    case english = "English"
+}
+
 class ProfileViewModel: ObservableObject {
     @Published private(set) var profile: ProfileModel
     @Published var isLoading = false
     @Published var errorMessage: String?
     @Published var user: UserModel?
+    @AppStorage("selectedLanguage") var selectedLanguageRawValue: String = AppLanguage.english.rawValue
+    @AppStorage("isDarkTheme") var isDarkTheme: Bool = false
     private let authenticationManager: AuthenticationManagerProtocol
     private let userManager: UserManagerProtocol
+    
+    var selectedLanguage: AppLanguage {
+        get { AppLanguage(rawValue: selectedLanguageRawValue) ?? .english }
+        set { selectedLanguageRawValue = newValue.rawValue }
+    }
     
     init(profile: ProfileModel = ProfileModel(
         fullName: "John Doe",
@@ -26,14 +38,12 @@ class ProfileViewModel: ObservableObject {
         self.userManager = userManager
     }
     
-    // MARK: - Intent(s)
+    func updateLanguage(_ language: AppLanguage) {
+        selectedLanguage = language
+    }
     
-    func updateLanguage(_ language: ProfileModel.Language) {
-        profile = ProfileModel(
-            fullName: profile.fullName,
-            username: profile.username,
-            selectedLanguage: language
-        )
+    func saveTheme() {
+        isDarkTheme.toggle()
     }
     
     func saveProfile(fullName: String, username: String, profileImage: UIImage?) async {

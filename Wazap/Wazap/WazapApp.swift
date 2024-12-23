@@ -11,13 +11,14 @@ import FirebaseCore
 @main
 struct WazapApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
+    @AppStorage("isDarkTheme") private var isDarkTheme = false
     @State private var showSplashScreen = true
     
     var body: some Scene {
         WindowGroup {
             ZStack {
                 LoginView()
-                
+                  .preferredColorScheme(isDarkTheme ? .dark : .light)
                 if showSplashScreen {
                     LaunchScreen()
                         .transition(.opacity)
@@ -31,6 +32,7 @@ struct WazapApp: App {
                     }
                 }
             }
+
         }
     }
 }
