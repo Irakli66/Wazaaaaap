@@ -2,7 +2,7 @@ import FirebaseFirestore
 import SwiftUI
 import AVFoundation
  
-class ChatViewModel: ObservableObject {
+final class ChatViewModel: ObservableObject {
     @Published var messages: [ChatMessage] = []
     @Published var messageText: String = ""
     var emojiArray = ["like", "love", "beer", "cry", "devil"]
@@ -15,7 +15,7 @@ class ChatViewModel: ObservableObject {
     private let chatRoomID = "chatRoomID1"
     private var lastFetchedMessage: QueryDocumentSnapshot?
     private var firstFetchedMessage: QueryDocumentSnapshot?
-    private let limit = 50
+    private let limit = 100
     
     init(authManager: AuthenticationManagerProtocol = AuthenticationManager(), userManager: UserManagerProtocol = UserManager()) {
         self.authManager = authManager
@@ -144,11 +144,6 @@ class ChatViewModel: ObservableObject {
     }
     
     func sendMessage() async {
-        guard !messageText.isEmpty else {
-            print("Error: Message text is empty")
-            return
-        }
-        
         guard let currentUser = authManager.getCurrentUser() else {
             print("Error: No user is currently logged in")
             return
@@ -164,7 +159,7 @@ class ChatViewModel: ObservableObject {
         let messageData: [String: Any] = [
             "username": userInfo?.username ?? "Guest",
             "profilePictureURL": userInfo?.photoUrl ?? currentUser.photoUrl ?? "https://example.com/default-profile.jpg",
-            "text": messageText,
+            "text": messageText.isEmpty ? "🦦" : messageText,
             "userID": currentUser.uid,
             "timestamp": FieldValue.serverTimestamp(),
             "emoji": []

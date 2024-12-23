@@ -11,10 +11,10 @@ import Kingfisher
 struct ChatView: View {
     @AppStorage("selectedLanguage") var selectedLanguageRawValue: String = AppLanguage.english.rawValue
     @StateObject private var viewModel = ChatViewModel()
-    @State var visibleEmojiMessageID: String?
+    @State private var visibleEmojiMessageID: String?
     @State private var scrollProxy: ScrollViewProxy?
     @State private var shouldAutoScroll = true
-    let currentUser = AuthenticationManager().getCurrentUser()
+    private let currentUser = AuthenticationManager().getCurrentUser()
     
     var body: some View {
         NavigationStack {
@@ -213,8 +213,9 @@ struct ChatView: View {
                         selectedLanguageRawValue == "English" ? "Type a message..." : "მისწერე დეპეშა",
                         text: $viewModel.messageText
                     )
+                    .autocorrectionDisabled()
                     .frame(height: 36)
-                    .padding(.leading, 12)
+                    .padding(.horizontal, 12)
                     .background(Color(.systemGray6))
                     .overlay(
                         RoundedRectangle(cornerRadius: 20)
@@ -222,14 +223,27 @@ struct ChatView: View {
                     )
                     .cornerRadius(20)
                     
-                    Button(action: {
-                        Task {
-                            await viewModel.sendMessage()
-                            shouldAutoScroll = true
+                    if viewModel.messageText == "" {
+                        Button {
+                            Task {
+                                await viewModel.sendMessage()
+                                shouldAutoScroll = true
+                            }
+                        } label: {
+                            Text("🦦")
+                                .font(.system(size: 28))
                         }
-                    }) {
-                        Image("sendButton")
+                    } else {
+                        Button(action: {
+                            Task {
+                                await viewModel.sendMessage()
+                                shouldAutoScroll = true
+                            }
+                        }) {
+                            Image("sendButton")
+                        }
                     }
+                    
                 }
                 .padding(.horizontal, 15)
                 .padding(.bottom, 34)
