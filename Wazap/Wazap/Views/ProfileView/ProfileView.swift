@@ -167,7 +167,7 @@ struct ProfileView: View {
                 Image("N-badge")
             }
             .padding()
-            .background(Color.white)
+            .background(.profileCustomField)
             .cornerRadius(10)
         }
         .padding(.horizontal)
@@ -182,7 +182,7 @@ struct ProfileView: View {
                 .padding(.top, 19)
             TextField(viewModel.selectedLanguage == .english ? "Username" : "ზედმეტსახელი", text: $username)
                 .padding()
-                .background(Color.white)
+                .background(.profileCustomField)
                 .cornerRadius(10)
         }
         .padding(.horizontal)
